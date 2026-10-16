@@ -371,6 +371,12 @@
   .soon-tag{position:absolute;top:10px;right:10px;background:rgba(255,255,255,.95);color:#4F2FC9;font-size:10.5px;font-weight:800;padding:3px 9px;border-radius:999px;z-index:1;}
   #toast{position:fixed;left:50%;bottom:28px;transform:translate(-50%,30px);background:#1f1b3a;color:#fff;padding:13px 20px;border-radius:14px;font-size:14px;font-weight:600;text-align:center;opacity:0;pointer-events:none;transition:all .25s ease;z-index:500;box-shadow:0 12px 30px -8px rgba(0,0,0,.5);max-width:90vw;}
   #toast.show{opacity:1;transform:translate(-50%,0);}
+
+  .q-img{display:block;max-width:100%;height:auto;margin:0 0 18px;background:#fff;border:1px solid var(--line);border-radius:12px;padding:8px;}
+  .opt-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
+  .opt-grid .opt{justify-content:center;text-align:center;padding:16px 6px;font-size:18px;font-weight:800;margin:0;}
+  .opt-grid .review-opt{padding:12px 6px;}
+  @media(max-width:480px){.opt-grid{gap:8px;}.opt-grid .opt{padding:14px 2px;font-size:16px;}}
 </style>
 </head>
 <body data-theme="home">
@@ -593,7 +599,7 @@
    then paste each Web App URL below.
    =================================================================== */
 const SHEET_WEBAPP_URL = {
-  '10': 'https://script.google.com/macros/s/AKfycbxGoeqVz6tWlPuF3odFLoev75QXRP_l8NJ1tpuZA2oSHSGApMmmMLE_5PhpTtfmxoOcCw/exec'
+  '10': 'https://script.google.com/macros/s/AKfycbyfeni1hX9--roh9-Mp-qUdM0Wtl40AVNr_rjVEHwU49p26c5LLFvN6S468IKOBtYB3/exec'
 };
 
 function logResultToSheet(payload){
@@ -615,7 +621,7 @@ function logResultToSheet(payload){
    NOTE: this password check runs in the browser, so it only keeps casual
    visitors out. Keep the Google Sheet itself private (share only with
    teachers) so students cannot open it even if they find the link. */
-const RESULTS_SHEET_URL = 'https://script.google.com/macros/s/AKfycbyfeni1hX9--roh9-Mp-qUdM0Wtl40AVNr_rjVEHwU49p26c5LLFvN6S468IKOBtYB3/exec';
+const RESULTS_SHEET_URL = 'PASTE_GOOGLE_SHEET_URL_HERE';
 const TEACHER_PASSWORD = 'teacher';
 
 function openPwModal(){
@@ -790,6 +796,28 @@ const SUBJECTS_10 = [
 const MATH10_EN_CHAPTERS = [{"id": "math10_en_ch1", "name": "1. Relations and Functions", "en": "1. Relations and Functions", "questions": []}, {"id": "math10_en_ch2", "name": "2. Numbers and Sequences", "en": "2. Numbers and Sequences", "questions": []}, {"id": "math10_en_ch3", "name": "3. Algebra", "en": "3. Algebra", "questions": []}, {"id": "math10_en_ch4", "name": "4. Geometry", "en": "4. Geometry", "questions": []}, {"id": "math10_en_ch5", "name": "5. Coordinate Geometry", "en": "5. Coordinate Geometry", "questions": []}, {"id": "math10_en_ch6", "name": "6. Trigonometry", "en": "6. Trigonometry", "questions": []}, {"id": "math10_en_ch7", "name": "7. Mensuration", "en": "7. Mensuration", "questions": []}, {"id": "math10_en_ch8", "name": "8. Statistics and Probability", "en": "8. Statistics and Probability", "questions": []}];
 
 const MATH10_TA_CHAPTERS = [{"id": "math10_ta_ch1", "name": "இயல் 1: உறவுகளும் சார்புகளும்", "en": "1. Relations and Functions", "questions": []}, {"id": "math10_ta_ch2", "name": "இயல் 2: எண்களும் தொடர்வரிசைகளும்", "en": "2. Numbers and Sequences", "questions": []}, {"id": "math10_ta_ch3", "name": "இயல் 3: இயற்கணிதம்", "en": "3. Algebra", "questions": []}, {"id": "math10_ta_ch4", "name": "இயல் 4: வடிவியல்", "en": "4. Geometry", "questions": []}, {"id": "math10_ta_ch5", "name": "இயல் 5: ஆயத்தொலைவு வடிவியல்", "en": "5. Coordinate Geometry", "questions": []}, {"id": "math10_ta_ch6", "name": "இயல் 6: முக்கோணவியல்", "en": "6. Trigonometry", "questions": []}, {"id": "math10_ta_ch7", "name": "இயல் 7: அளவியல்", "en": "7. Mensuration", "questions": []}, {"id": "math10_ta_ch8", "name": "இயல் 8: புள்ளியியலும் நிகழ்தகவும்", "en": "8. Statistics and Probability", "questions": []}];
+
+
+/* ===== 10th Maths: questions are IMAGES (folder: maths-images/<tamil|english>/ch<N>/<q>.<ext>) =====
+   Correct options (A-D) per chapter, question 1..n in order. Same key for both mediums. */
+const MATH_IMG_KEY = ['CCABCDCACCADCBD','CABCDADCACCDBBC','DABABCDBCCBABDBBDBCA','CBDADABCADBBBDA','BABCCDBBACCABBB','BDBABBACBDBBDBA','DAABCBBCCADAABD','CACBCDBAABBBCCD'];
+const MATH_IMG_EXT = {
+  tamil:   ['jpg','jpg','jpg','png','png','png','jpg','jpg'],
+  english: ['png','png','png','png','jpg','jpg','png','jpg']
+};
+const MATH_IMG_LABELS = { tamil:['அ','ஆ','இ','ஈ'], english:['A','B','C','D'] };
+function buildMathImageQuestions(chapters, medium){
+  chapters.forEach((c,ci)=>{
+    c.questions = MATH_IMG_KEY[ci].split('').map((L,qi)=>({
+      q: '',
+      img: 'maths-images/'+medium+'/ch'+(ci+1)+'/'+(qi+1)+'.'+MATH_IMG_EXT[medium][ci],
+      options: MATH_IMG_LABELS[medium].map(l=>'('+l+')'),
+      answer: 'ABCD'.indexOf(L)
+    }));
+  });
+}
+buildMathImageQuestions(MATH10_TA_CHAPTERS,'tamil');
+buildMathImageQuestions(MATH10_EN_CHAPTERS,'english');
 
 const SAMPLE_QUESTIONS = [
   {q:'இது ஒரு மாதிரி வினா. இப்பாடத்திற்கான உண்மையான வினாக்கள் விரைவில் புதுப்பிக்கப்படும்.', options:['விருப்பம் A','விருப்பம் B','விருப்பம் C','விருப்பம் D'], answer:0},
@@ -1255,12 +1283,18 @@ function renderQuestion(){
   const q = state.questions[state.qIndex];
   document.getElementById('q-num-label').textContent = T('question') + ' ' + (state.qIndex+1) + ' / ' + state.questions.length;
   document.getElementById('quiz-progress-chip').textContent = (state.qIndex+1) + ' / ' + state.questions.length;
-  document.getElementById('q-text').textContent = q.q;
   const letters = ['A','B','C','D','E','F'];
+  if(q.img){
+    document.getElementById('q-text').innerHTML = `<img class="q-img" src="${q.img}" alt="Question ${state.qIndex+1}" onerror="this.outerHTML='<div class=&quot;err&quot; style=&quot;display:block&quot;>Image not found: ${q.img}</div>'">`;
+    document.getElementById('q-options').innerHTML = '<div class="opt-grid">' + q.options.map((opt,i)=>`
+      <div class="opt ${state.answers[state.qIndex]===i?'selected':''}" onclick="chooseOption(${i})">${escapeHtml(opt)}</div>`).join('') + '</div>';
+  } else {
+  document.getElementById('q-text').textContent = q.q;
   document.getElementById('q-options').innerHTML = q.options.map((opt,i)=>`
     <div class="opt ${state.answers[state.qIndex]===i?'selected':''}" onclick="chooseOption(${i})">
       <span class="letter">${letters[i]}</span><span>${escapeHtml(opt)}</span>
     </div>`).join('');
+  }
   document.getElementById('progress-fill').style.width = (((state.qIndex+1)/state.questions.length)*100) + '%';
   document.getElementById('btn-prev').disabled = state.qIndex===0;
   document.getElementById('btn-next').textContent = state.qIndex===state.questions.length-1 ? T('finishLabel') : T('nextLabel');
@@ -1294,7 +1328,7 @@ function updateWeakList(){
   const weak = loadWeak(state.subject.id);
   state.questions.forEach((q,i)=>{
     const correct = state.answers[i]===q.answer;
-    const idx = weak.findIndex(w=>w.q===q.q);
+    const idx = weak.findIndex(w=>(w.img||w.q)===(q.img||q.q));
     if(!correct){ if(idx===-1) weak.push(q); }
     else { if(idx!==-1) weak.splice(idx,1); }
   });
@@ -1350,6 +1384,24 @@ function renderReviewList(){
   const html = state.questions.map((q,i)=>{
     const userAns = state.answers[i];
     const isCorrect = userAns === q.answer;
+    if(q.img){
+      const cells = q.options.map((opt,oi)=>{
+        let cls = 'review-opt';
+        if(oi === q.answer) cls += ' correct'; else if(oi === userAns) cls += ' wrong';
+        return `<div class="${cls}" style="justify-content:center;font-weight:700;margin:0;">${escapeHtml(opt)}</div>`;
+      }).join('');
+      const un = userAns===null ? `<div class="review-unanswered">${T('notAnswered')}</div>` : '';
+      return `
+      <div class="review-q">
+        <div class="rq-head">
+          <span class="rq-num">${T('question')} ${i+1}</span>
+          <span class="review-tag ${isCorrect?'correct-tag':'wrong-tag'}">${isCorrect?T('correctTag'):T('wrongTag')}</span>
+        </div>
+        <img class="q-img" src="${q.img}" alt="Question ${i+1}" style="margin-bottom:12px;">
+        <div class="opt-grid">${cells}</div>
+        ${un}
+      </div>`;
+    }
     const optsHtml = q.options.map((opt,oi)=>{
       let cls = 'review-opt';
       if(oi === q.answer) cls += ' correct';
