@@ -274,7 +274,7 @@
 
   body{background:linear-gradient(155deg,var(--bg1),var(--bg2)) fixed;}
   header.letterhead{background:linear-gradient(100deg,var(--a1),var(--a2));border-bottom:none;}
-  .letterhead-inner{padding:14px 24px;}
+  .letterhead-inner{padding:27px 24px;min-height:0;}
   .seal{background:#fff;border-radius:50%;padding:4px;box-shadow:0 4px 14px rgba(0,0,0,.22);}
   .rule-thick{background:var(--gold);} .rule-thin{background:var(--gold-light);}
   .stepper-wrap{background:linear-gradient(90deg,var(--ink),var(--ink-2));}
@@ -377,6 +377,16 @@
   .opt-grid .opt{justify-content:center;text-align:center;padding:16px 6px;font-size:18px;font-weight:800;margin:0;}
   .opt-grid .review-opt{padding:12px 6px;}
   @media(max-width:480px){.opt-grid{gap:8px;}.opt-grid .opt{padding:14px 2px;font-size:16px;}}
+
+  footer{opacity:1 !important;padding:30px 16px 46px;}
+  .credit{display:inline-block;max-width:92vw;background:#fff;border-radius:18px;padding:18px 28px;border:3px solid transparent;background:linear-gradient(#fff,#fff) padding-box,linear-gradient(100deg,#4F2FC9,#E5446D,#FF9F1C,#22C55E) border-box;box-shadow:0 12px 30px -14px rgba(79,47,201,.5);line-height:1.5;}
+  .credit div{font-weight:800;}
+  .cr-name{font-size:19px;letter-spacing:.02em;background:linear-gradient(90deg,#4F2FC9,#E5446D,#FF9F1C);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent;}
+  .cr-role{font-size:15px;color:#0891B2;}
+  .cr-school{font-size:15px;color:#EA580C;}
+  .cr-dist{font-size:15px;color:#16A34A;}
+  .cr-src{margin-top:14px;font-size:12px;font-weight:600;color:var(--ink);opacity:.65;}
+  @media(max-width:480px){.credit{padding:14px 16px;}.cr-name{font-size:16px;}.cr-role,.cr-school,.cr-dist{font-size:13.5px;}}
 </style>
 </head>
 <body data-theme="home">
@@ -403,22 +413,7 @@
 </div>
 <header class="letterhead">
   <div class="letterhead-inner">
-    <svg class="seal" viewBox="0 0 100 100" fill="none">
-      <circle cx="50" cy="50" r="46" stroke="#C98A2C" stroke-width="2"/>
-      <circle cx="50" cy="50" r="38" stroke="#182644" stroke-width="1.5"/>
-      <g stroke="#C98A2C" stroke-width="1.4">
-        <line x1="50" y1="14" x2="50" y2="24"/>
-        <line x1="50" y1="76" x2="50" y2="86"/>
-        <line x1="14" y1="50" x2="24" y2="50"/>
-        <line x1="76" y1="50" x2="86" y2="50"/>
-        <line x1="24" y1="24" x2="31" y2="31"/>
-        <line x1="69" y1="69" x2="76" y2="76"/>
-        <line x1="76" y1="24" x2="69" y2="31"/>
-        <line x1="31" y1="69" x2="24" y2="76"/>
-      </g>
-      <circle cx="50" cy="50" r="14" fill="#182644"/>
-      <text x="50" y="55" text-anchor="middle" font-size="14" fill="#F7F2E7" font-family="Noto Serif Tamil, serif" font-weight="700">௧</text>
-    </svg>
+    
   </div>
 </header>
 <div class="rule"><div class="rule-thick"></div><div class="rule-thin"></div></div>
@@ -589,7 +584,15 @@
 
 </main>
 
-<footer>10 ஆம் வகுப்பு — Source: Book Back 1 Mark Q&amp;A</footer>
+<footer>
+  <div class="credit">
+    <div class="cr-name">P.M.SURESH, M.Sc., B.Ed., M.Phil.,</div>
+    <div class="cr-role">Computer Instructor Gr-1</div>
+    <div class="cr-school">Govt. Boys Hr. Sec. School, Podaturpet-631208</div>
+    <div class="cr-dist">Thiruvallur Dist</div>
+  </div>
+  <div class="cr-src">10 ஆம் வகுப்பு — Source: Book Back 1 Mark Q&amp;A</div>
+</footer>
 
 <script>
 /* ===================================================================
@@ -639,13 +642,12 @@ function submitPw(){
     err.style.display = 'block';
     return;
   }
-  if(!RESULTS_SHEET_URL || RESULTS_SHEET_URL.indexOf('PASTE_')===0){
-    err.textContent = 'Sheet link not set yet / தாள் இணைப்பு இன்னும் சேர்க்கப்படவில்லை';
-    err.style.display = 'block';
-    return;
-  }
   closePwModal();
-  window.open(RESULTS_SHEET_URL, '_blank', 'noopener');
+  // Direct sheet link if you paste one above; otherwise the script web app opens the sheet for you
+  const direct = RESULTS_SHEET_URL && RESULTS_SHEET_URL.indexOf('PASTE_')!==0;
+  const url = direct ? RESULTS_SHEET_URL
+            : SHEET_WEBAPP_URL['10'] + '?view=results&pw=' + encodeURIComponent(v);
+  window.open(url, '_blank', 'noopener');
 }
 document.addEventListener('keydown', e=>{ if(e.key==='Escape') closePwModal(); });
 
