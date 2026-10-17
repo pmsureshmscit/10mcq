@@ -1,0 +1,23 @@
+{
+  "name": "10mcq",
+  "version": "1.0.0",
+  "description": "10th Grade Tamil Online MCQ Test Platform with Vercel Web Analytics",
+  "main": "index.html",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pmsureshmscit/10mcq.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/pmsureshmscit/10mcq/issues"
+  },
+  "homepage": "https://github.com/pmsureshmscit/10mcq#readme",
+  "dependencies": {
+    "@vercel/analytics": "^2.0.1"
+  }
+}
