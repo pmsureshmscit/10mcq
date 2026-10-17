@@ -387,6 +387,46 @@
   .cr-dist{font-size:15px;color:#16A34A;}
   .cr-src{margin-top:14px;font-size:12px;font-weight:600;color:var(--ink);opacity:.65;}
   @media(max-width:480px){.credit{padding:14px 16px;}.cr-name{font-size:16px;}.cr-role,.cr-school,.cr-dist{font-size:13.5px;}}
+
+  /* ===== quiz layout with right-side question palette ===== */
+  .quiz-layout{display:grid;grid-template-columns:minmax(0,1fr) 290px;gap:22px;align-items:start;}
+  .q-palette{position:sticky;top:16px;background:#fff;border-radius:16px;padding:18px 16px;border:none;border-top:7px solid transparent;background:linear-gradient(#fff,#fff) padding-box,linear-gradient(90deg,var(--a1),var(--a2)) border-box;box-shadow:var(--shadow);}
+  .qp-title{font-family:"Noto Serif Tamil",serif;font-weight:700;color:var(--ink);font-size:16px;margin-bottom:4px;}
+  .qp-title span{display:block;font-family:inherit;font-weight:600;font-size:11.5px;color:var(--muted);}
+  .qp-count{font-size:13px;color:var(--ink);margin:8px 0 12px;}
+  .qp-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;max-height:52vh;overflow:auto;padding:6px;}
+  .pq{aspect-ratio:1;border-radius:10px;border:2px solid var(--line);background:#fff;color:var(--ink);font-weight:800;font-size:14px;font-family:inherit;cursor:pointer;transition:transform .12s ease;padding:0;}
+  .pq:hover{transform:scale(1.08);}
+  .pq.done{background:linear-gradient(135deg,#22C55E,#15A34A);border-color:#15A34A;color:#fff;}
+  .pq.cur{outline:3px solid var(--ink-2);outline-offset:2px;transform:scale(1.08);}
+  .qp-legend{display:flex;flex-direction:column;gap:6px;margin-top:14px;font-size:11.5px;color:var(--muted);font-weight:600;}
+  .qp-legend .lg{display:inline-block;width:14px;height:14px;border-radius:4px;border:2px solid var(--line);background:#fff;vertical-align:-2px;margin-right:7px;}
+  .qp-legend .lg.done{background:linear-gradient(135deg,#22C55E,#15A34A);border-color:#15A34A;}
+  .qp-legend .lg.cur{outline:2px solid var(--ink-2);outline-offset:1px;}
+  .btn-submit{background:linear-gradient(100deg,#16A34A,#22C55E);color:#fff;border:none;border-radius:12px;padding:13px 26px;font-size:15px;font-weight:800;font-family:inherit;cursor:pointer;box-shadow:0 8px 18px -8px #16A34A;animation:pulseSub 1.6s ease-in-out infinite;}
+  @keyframes pulseSub{0%,100%{transform:scale(1);}50%{transform:scale(1.03);}}
+  @media(max-width:860px){
+    .quiz-layout{grid-template-columns:1fr;}
+    .q-palette{position:static;margin-top:6px;}
+    .qp-grid{grid-template-columns:repeat(6,1fr);max-height:none;}
+  }
+
+  .cq-box{margin-top:16px;padding:14px 16px;border-radius:14px;background:var(--cream);border:1.5px solid var(--line);}
+  .cq-top{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:12px;}
+  .cq-sum{font-size:13.5px;color:var(--ink);}
+  .cq-links button{background:none;border:none;color:var(--ink-2);font-weight:700;font-size:12.5px;cursor:pointer;font-family:inherit;text-decoration:underline;margin-left:12px;padding:0;}
+  .cq-label{font-weight:800;color:var(--ink);font-size:14px;margin-bottom:8px;}
+  .cq-label small{font-weight:600;color:var(--muted);font-size:11.5px;margin-left:6px;}
+  .cq-row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;}
+  .cq-chips{display:flex;flex-wrap:wrap;gap:8px;}
+  .cq-chip{border:2px solid var(--line);background:#fff;color:var(--ink);font-weight:800;font-size:14px;padding:8px 14px;border-radius:999px;cursor:pointer;font-family:inherit;}
+  .cq-chip:hover{border-color:var(--ink-2);}
+  .cq-chip.on{background:linear-gradient(100deg,var(--ink),var(--ink-2));color:#fff;border-color:transparent;}
+  #cq-input{width:96px;padding:9px 10px;border-radius:10px;border:2px solid var(--line);font-size:14px;font-weight:700;text-align:center;font-family:inherit;color:var(--ink);background:#fff;}
+
+  sub,sup{font-size:.72em;line-height:0;}
+  .nuc{display:inline-flex;flex-direction:column;vertical-align:middle;font-size:.72em;line-height:1.05;margin-right:1px;text-align:right;}
+  .nuc sup,.nuc sub{position:static;font-size:1em;line-height:1.05;vertical-align:baseline;}
 </style>
 </head>
 <body data-theme="home">
@@ -516,6 +556,17 @@
       <h4 id="custom-panel-title">தனிப்பயன் தேர்வு — இயல்களைத் தேர்வு செய்யவும்</h4>
       <p class="sub">Select one or more chapters to build your own test</p>
       <div class="ch-check-list" id="ch-check-list"></div>
+      <div class="cq-box">
+        <div class="cq-top">
+          <div class="cq-sum" id="cq-sum"></div>
+          <div class="cq-links"><button type="button" onclick="customSelectAll(true)" id="cq-all-btn">அனைத்து இயல்கள்</button><button type="button" onclick="customSelectAll(false)" id="cq-clear-btn">அழி</button></div>
+        </div>
+        <div class="cq-label"><span id="cq-label-main">வினாக்களின் எண்ணிக்கை</span> <small id="cq-label-sub">Number of questions</small></div>
+        <div class="cq-row">
+          <div class="cq-chips" id="cq-chips"></div>
+          <input type="number" id="cq-input" min="1" inputmode="numeric" oninput="onCustomInput()">
+        </div>
+      </div>
       <div class="custom-actions">
         <button class="btn-ghost" id="custom-cancel-btn" onclick="toggleCustomPanel()">ரத்து செய்</button>
         <button class="btn-dark" id="btn-start-custom" onclick="startCustomTest()">தேர்வைத் தொடங்கு →</button>
@@ -544,15 +595,30 @@
     <div id="quiz-notice"></div>
     <div class="progress-track"><div class="progress-fill" id="progress-fill"></div></div>
 
-    <div class="q-card">
-      <div class="q-num" id="q-num-label">வினா 1</div>
-      <div class="q-text" id="q-text"></div>
-      <div id="q-options"></div>
-    </div>
+    <div class="quiz-layout">
+      <div class="quiz-main">
+        <div class="q-card">
+          <div class="q-num" id="q-num-label">வினா 1</div>
+          <div class="q-text" id="q-text"></div>
+          <div id="q-options"></div>
+        </div>
 
-    <div class="quiz-nav">
-      <button class="btn-ghost" id="btn-prev" onclick="prevQ()">&larr; முந்தையது</button>
-      <button class="btn-dark" id="btn-next" onclick="nextQ()">அடுத்தது →</button>
+        <div class="quiz-nav">
+          <button class="btn-ghost" id="btn-prev" onclick="prevQ()">&larr; முந்தையது</button>
+          <button class="btn-dark" id="btn-next" onclick="nextQ()">அடுத்தது →</button>
+        </div>
+      </div>
+
+      <aside class="q-palette">
+        <div class="qp-title">வினா எண்கள் <span>Question Palette</span></div>
+        <div class="qp-count" id="qp-count"></div>
+        <div class="qp-grid" id="qp-grid"></div>
+        <div class="qp-legend">
+          <span><i class="lg done"></i>பதிலளித்தது · Answered</span>
+          <span><i class="lg"></i>பதிலளிக்கவில்லை · Not answered</span>
+          <span><i class="lg cur"></i>தற்போதையது · Current</span>
+        </div>
+      </aside>
     </div>
   </section>
 
@@ -707,6 +773,7 @@ const UI_TEXT = {
     customTestType:'தனிப்பயன் தேர்வு (Custom Test)',
     weakTestType:'பலவீன வினா மீள்பயிற்சி (Weak Question Review)',
     selectAtLeastOne:'குறைந்தது ஒரு இயலையாவது தேர்வு செய்யவும் / Select at least one chapter',
+    qCountLabel:'வினாக்களின் எண்ணிக்கை', qCountSub:'Number of questions', allLabel:'அனைத்தும்', pickChapters:'இயல்களைத் தேர்வு செய்யவும்', chaptersSel:'தேர்ந்தெடுத்த இயல்கள்', availLabel:'கிடைக்கும் வினாக்கள்', selectAllCh:'அனைத்து இயல்கள்', clearCh:'அழி', otherNum:'வேறு எண்',
     noWeakYet:'இதுவரை தவறான பதில்கள் எதுவும் பதிவு செய்யப்படவில்லை / No weak questions recorded yet',
     reviewHeading:'வினா விடைகள் மறுபார்வை / Answer Review',
     correctTag:'சரி / Correct',
@@ -748,6 +815,7 @@ const UI_TEXT = {
     customTestType:'Custom Test',
     weakTestType:'Weak Question Review',
     selectAtLeastOne:'Select at least one chapter',
+    qCountLabel:'Number of questions', qCountSub:'', allLabel:'All', pickChapters:'Select chapters first', chaptersSel:'Chapters selected', availLabel:'Questions available', selectAllCh:'Select all', clearCh:'Clear', otherNum:'Other',
     noWeakYet:'No weak questions recorded yet',
     reviewHeading:'Answer Review',
     correctTag:'Correct',
@@ -1148,10 +1216,11 @@ function goChapters(){
   document.getElementById('custom-panel').classList.remove('show');
   document.getElementById('ch-check-list').innerHTML = bank.chapters.map((c,i)=>`
     <label class="ch-check">
-      <input type="checkbox" value="${i}">
+      <input type="checkbox" value="${i}" onchange="customN=customN;updateCustomSummary()">
       <span>${c.name}</span>
       <span class="cnt">${c.questions.length} Qs</span>
     </label>`).join('');
+  customN = 0; updateCustomSummary();
 
   renderWeakBadge();
   renderChapterGrid(bank);
@@ -1247,11 +1316,49 @@ function startMixedTest(){
   launchQuiz(shuffle(all).slice(0,n), T('mixedTestType'));
 }
 
+let customN = 0;   // 0 = all available questions of the selected chapters
+function customChecked(){ return Array.from(document.querySelectorAll('#ch-check-list input:checked')).map(el=>parseInt(el.value)); }
+function customAvail(){ return customChecked().reduce((n,i)=>n+state.bank.chapters[i].questions.length,0); }
+function customSelectAll(on){
+  document.querySelectorAll('#ch-check-list input').forEach(el=>{ el.checked = on; });
+  customN = 0; updateCustomSummary();
+}
+function setCustomN(n){ customN = n; updateCustomSummary(); }
+function onCustomInput(){
+  const v = parseInt(document.getElementById('cq-input').value);
+  const avail = customAvail();
+  customN = isNaN(v) || v<1 ? 0 : Math.min(v, avail||v);
+  renderCustomChips();
+}
+function renderCustomChips(){
+  const avail = customAvail();
+  const opts = [5,10,15,20,25,30,40,50].filter(n=>n<avail);
+  document.getElementById('cq-chips').innerHTML =
+    opts.map(n=>`<button type="button" class="cq-chip ${customN===n?'on':''}" onclick="setCustomN(${n})">${n}</button>`).join('') +
+    `<button type="button" class="cq-chip ${customN===0?'on':''}" onclick="setCustomN(0)">${T('allLabel')}${avail?' ('+avail+')':''}</button>`;
+}
+function updateCustomSummary(){
+  const sel = customChecked().length, avail = customAvail();
+  document.getElementById('cq-sum').innerHTML = sel
+    ? `${T('chaptersSel')}: <b>${sel}</b> &nbsp;·&nbsp; ${T('availLabel')}: <b>${avail}</b>`
+    : `<span style="color:var(--muted)">${T('pickChapters')}</span>`;
+  if(customN > avail) customN = 0;
+  const inp = document.getElementById('cq-input');
+  inp.max = avail || ''; inp.placeholder = T('otherNum');
+  if(document.activeElement !== inp) inp.value = customN || '';
+  document.getElementById('cq-label-main').textContent = T('qCountLabel');
+  document.getElementById('cq-label-sub').textContent = T('qCountSub');
+  document.getElementById('cq-all-btn').textContent = T('selectAllCh');
+  document.getElementById('cq-clear-btn').textContent = T('clearCh');
+  renderCustomChips();
+}
+
 function startCustomTest(){
-  const checked = Array.from(document.querySelectorAll('#ch-check-list input:checked')).map(el=>parseInt(el.value));
+  const checked = customChecked();
   if(checked.length===0){ alert(T('selectAtLeastOne')); return; }
-  const qs = checked.flatMap(i=>state.bank.chapters[i].questions);
-  launchQuiz(shuffle(qs), T('customTestType'));
+  const qs = shuffle(checked.flatMap(i=>state.bank.chapters[i].questions));
+  const n = (customN>0 && customN<qs.length) ? customN : qs.length;
+  launchQuiz(qs.slice(0,n), T('customTestType'));
 }
 
 function startWeakReview(){
@@ -1264,8 +1371,8 @@ function launchQuiz(questions, testType){
   if(!questions || !questions.length){ showSoon(); return; }
   state.testType = testType;
   state.qIndex = 0;
-  state.questions = questions;
-  state.answers = new Array(questions.length).fill(null);
+  state.questions = shuffle(questions);   // new random order every attempt
+  state.answers = new Array(state.questions.length).fill(null);
 
   document.getElementById('quiz-subject-title').textContent = state.subject.name + ' — ' + testType;
   document.getElementById('quiz-student-tag').textContent = state.name + ' · ' + state.school + (state.group? ' · Group: '+state.group : '');
@@ -1281,6 +1388,40 @@ function escapeHtml(s){
   return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 }
 
+
+/* ============ SCIENCE FORMULA FORMATTING (subscripts / superscripts) ============
+   Questions are stored as plain text (H2O, 10^4, m s-1 ...). For Science subjects this
+   turns them into H<sub>2</sub>O, 10<sup>4</sup>, m s<sup>-1</sup> when shown. */
+function fmtSci(raw){
+  let t = escapeHtml(raw); const keep = [];
+  const hold = h => { keep.push(h); return '\uE000'+(keep.length-1)+'\uE001'; };
+  const MINUS = '[\u2013\u2212-]';
+  // nuclide notation: 6X12 , 20Ca40 , ZY^A  -> mass number over atomic number
+  t = t.replace(/ZY\^A/g, () => hold('<span class="nuc"><sup>A</sup><sub>Z</sub></span>Y'));
+  t = t.replace(/(?<![A-Za-z0-9.])(\d{1,3})([A-Z][a-z]?)(\d{2,3})(?![A-Za-z0-9(])/g,
+        (m,z,el,a) => hold('<span class="nuc"><sup>'+a+'</sup><sub>'+z+'</sub></span>'+el));
+  // caret powers: 10^4 , 10^-23
+  t = t.replace(/\^\s*([\u2013\u2212-]?\d+|[A-Za-z])/g, (m,e) => '<sup>'+e.replace(/^[\u2013\u2212-]/,'\u2212')+'</sup>');
+  // "x 10" -> "× 10"  and  × 10-3 -> × 10 with superscript
+  t = t.replace(/(\d)\s*x\s*(?=10)/g, '$1 \u00d7 ');
+  t = t.replace(new RegExp('(\u00d7\\s*10)'+MINUS+'(\\d+)','g'), '$1<sup>\u2212$2</sup>');
+  // unit powers:  m s-1 , kg-1 , cm2 s-2 , mol-1 K-1 , Tamil units
+  t = t.replace(new RegExp('(^|[^A-Za-z\\u0B80-\\u0BFF])((?:cms|ms|Nkg|NKg|kg|Kg|cm|mol|K|m|s|\u0bae\u0bc0\u0bb5\u0bbf|\u0bae\u0bcb\u0bb2\u0bcd)\\d?)('+MINUS+')(\\d)(?!\\d)','g'),
+        '$1$2<sup>\u2212$4</sup>');
+  t = t.replace(/(?<![A-Za-z])(cm|mm|km|m|s)([23])(?![0-9])/g, '$1<sup>$2</sup>');
+  // chemical formulas: H2O, CO2, Fe2O3.xH2O, (NH4)2SO4, 2HCl(g)
+  const FORM = /(^|[^A-Za-z0-9])(\d*(?:[A-Z][a-z]?\d*|\((?:[A-Z][a-z]?\d*)+\)\d*)+(?:\.x?\d*(?:[A-Z][a-z]?\d*)+)*)(?![A-Za-z0-9])/g;
+  t = t.replace(FORM, (m,pre,f) => pre + f.replace(/([A-Za-z)])(\d+)/g, '$1<sub>$2</sub>'));
+  // ions
+  t = t.replace(/([\[(]OH)[\u2013\u2212-]([\])])/g, '$1<sup>\u2212</sup>$2');
+  t = t.replace(/(SO<sub>3<\/sub>)[\u2013\u2212-]/g, '$1<sup>\u2212</sup>');
+  t = t.replace(/\b(Na|K|Ca|Mg|Cu|Fe|Zn|Ag)\+/g, '$1<sup>+</sup>');
+  return t.replace(/\uE000(\d+)\uE001/g, (m,i) => keep[i]);
+}
+function fmtText(str){
+  return (state.subject && /^sci10/.test(state.subject.id)) ? fmtSci(str) : escapeHtml(str);
+}
+
 function renderQuestion(){
   const q = state.questions[state.qIndex];
   document.getElementById('q-num-label').textContent = T('question') + ' ' + (state.qIndex+1) + ' / ' + state.questions.length;
@@ -1291,16 +1432,36 @@ function renderQuestion(){
     document.getElementById('q-options').innerHTML = '<div class="opt-grid">' + q.options.map((opt,i)=>`
       <div class="opt ${state.answers[state.qIndex]===i?'selected':''}" onclick="chooseOption(${i})">${escapeHtml(opt)}</div>`).join('') + '</div>';
   } else {
-  document.getElementById('q-text').textContent = q.q;
+  document.getElementById('q-text').innerHTML = fmtText(q.q);
   document.getElementById('q-options').innerHTML = q.options.map((opt,i)=>`
     <div class="opt ${state.answers[state.qIndex]===i?'selected':''}" onclick="chooseOption(${i})">
-      <span class="letter">${letters[i]}</span><span>${escapeHtml(opt)}</span>
+      <span class="letter">${letters[i]}</span><span>${fmtText(opt)}</span>
     </div>`).join('');
   }
-  document.getElementById('progress-fill').style.width = (((state.qIndex+1)/state.questions.length)*100) + '%';
+  const answeredN = state.answers.filter(a=>typeof a==='number').length;
+  document.getElementById('progress-fill').style.width = ((answeredN/state.questions.length)*100) + '%';
   document.getElementById('btn-prev').disabled = state.qIndex===0;
-  document.getElementById('btn-next').textContent = state.qIndex===state.questions.length-1 ? T('finishLabel') : T('nextLabel');
+  const nb = document.getElementById('btn-next');
+  if(state.qIndex===state.questions.length-1){
+    nb.textContent = 'சமர்ப்பி · Submit ✓';
+    nb.className = 'btn-submit';
+  } else {
+    nb.textContent = T('nextLabel');
+    nb.className = 'btn-dark';
+  }
+  renderPalette();
 }
+
+function renderPalette(){
+  const total = state.questions.length;
+  const answeredN = state.answers.filter(a=>typeof a==='number').length;
+  document.getElementById('qp-count').innerHTML = 'பதிலளித்தவை · Answered: <b>'+answeredN+'</b> / '+total;
+  document.getElementById('qp-grid').innerHTML = state.questions.map((q,i)=>{
+    const done = typeof state.answers[i]==='number';
+    return `<button class="pq ${done?'done':''} ${i===state.qIndex?'cur':''}" onclick="goQ(${i})">${i+1}</button>`;
+  }).join('');
+}
+function goQ(i){ state.qIndex = i; renderQuestion(); }
 
 function chooseOption(i){
   state.answers[state.qIndex] = i;
@@ -1313,6 +1474,8 @@ function nextQ(){
   if(state.qIndex < state.questions.length-1){
     state.qIndex++; renderQuestion();
   } else {
+    const left = state.answers.filter(a=>typeof a!=='number').length;
+    if(left>0 && !confirm('இன்னும் '+left+' வினாக்களுக்கு விடையளிக்கவில்லை. சமர்ப்பிக்கவா?\n'+left+' question(s) not answered. Submit anyway?')) return;
     finishQuiz();
   }
 }
@@ -1408,7 +1571,7 @@ function renderReviewList(){
       let cls = 'review-opt';
       if(oi === q.answer) cls += ' correct';
       else if(oi === userAns) cls += ' wrong';
-      return `<div class="${cls}"><span class="letter">${letters[oi]}</span><span>${escapeHtml(opt)}</span></div>`;
+      return `<div class="${cls}"><span class="letter">${letters[oi]}</span><span>${fmtText(opt)}</span></div>`;
     }).join('');
     const unanswered = userAns===null ? `<div class="review-unanswered">${T('notAnswered')}</div>` : '';
     return `
@@ -1417,7 +1580,7 @@ function renderReviewList(){
           <span class="rq-num">${T('question')} ${i+1}</span>
           <span class="review-tag ${isCorrect?'correct-tag':'wrong-tag'}">${isCorrect?T('correctTag'):T('wrongTag')}</span>
         </div>
-        <div class="rq-text">${escapeHtml(q.q)}</div>
+        <div class="rq-text">${fmtText(q.q)}</div>
         ${optsHtml}
         ${unanswered}
       </div>`;
@@ -1427,6 +1590,7 @@ function renderReviewList(){
 
 function retryQuiz(){
   state.qIndex = 0;
+  state.questions = shuffle(state.questions);   // reshuffle on every retry
   state.answers = new Array(state.questions.length).fill(null);
   renderQuestion();
   showScreen('screen-quiz',5);
